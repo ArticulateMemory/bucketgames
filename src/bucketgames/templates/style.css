@@ -14,6 +14,26 @@ body {
     border-radius: 4px;
 }
 
+.cover-fade-mask {
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 50%, transparent 100%);
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    z-index: -1;
+    top: 0px;
+}
+
+.img-fluid-cover {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+#game-content .content {
+    background-color: #fffe;
+    backdrop-filter: blur(5px);
+}
+
 #bucket-content .img-contain {
     text-align: center;
     display: block;

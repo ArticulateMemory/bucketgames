@@ -31,6 +31,12 @@
         </div>
     </div>
 
+    {% if game.image_link('cover') %}
+    <div class="cover-fade-mask">
+        <img src="{{ game.image_link('cover') }}" class="img-fluid-cover"></img>
+    </div>
+    {% endif %}
+
     <div class="content d-inline-block mt-2">
         <a href="../index.html">All games</a>
     </div>
