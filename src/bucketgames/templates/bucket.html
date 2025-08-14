@@ -17,7 +17,7 @@
 
 <body>
 
-    <div class="container">
+    <div class="container" id="bucket-content">
 
         {%if bucket.description %}
         <div class="content mt-3">
@@ -29,12 +29,18 @@
             {% for game in bucket.games %}
             <div class="col-md-4 mt-3 content mb-3 me-3" >
                 {% if game.image_link('cover') %}
-                <a href="{{ game.directory }}/index.html"><img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="img-fluid"></a>
+                <a href="{{ game.directory }}/index.html" class="img-contain"><img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="img-fluid"></a>
                 {% endif %}
 
-                <h5><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
-
-                {{ game.short | markdown }}
+                <h5 class="mb-1"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
+                <div class="text-muted">
+                    {% if game.author and game.author_link %}
+                    By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
+                    {% elif game.author %}
+                    By {{ game.author }}
+                    {% endif %}
+                </div>
+                <div>{{ game.short | markdown }}</div>
             </div>
 
             {% endfor %}

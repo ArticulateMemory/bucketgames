@@ -13,3 +13,20 @@ body {
 .thumbnail {
     border-radius: 4px;
 }
+
+#game-content .img-contain {
+    text-align: right;
+    display: block;
+}
+
+.author-link {
+    text-decoration: none;
+}
+
+#game-title {
+    font-weight: bolder;
+}
+
+#game-head-container {
+    text-align: center;
+}
