@@ -14,6 +14,11 @@ body {
     border-radius: 4px;
 }
 
+#bucket-content .img-contain {
+    text-align: center;
+    display: block;
+}
+
 #game-content .img-contain {
     text-align: right;
     display: block;
