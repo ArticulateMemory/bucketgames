@@ -31,18 +31,35 @@
         </div>
     </div>
 
+    {% if game.image_link('cover') %}
+    <div class="cover-fade-mask">
+        <img src="{{ game.image_link('cover') }}" class="img-fluid-cover"></img>
+    </div>
+    {% endif %}
 
     <div class="content d-inline-block mt-2">
         <a href="../index.html">All games</a>
     </div>
 
-    <div class="container mt-2">
+    <div class="container mt-2" id="game-content">
 
-        <div class="row content">
+        <div class="row content mb-2">
 
             <div class="col-md-8">
-
-                {{ game.description | markdown }}
+                <div id="game-head-container">
+                    <h1 id="game-title">{{ game.title }}</h1>
+                    <span>
+                        {% if game.author and game.author_link %}
+                        By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
+                        {% elif game.author %}
+                        By {{ game.author }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div>
+                    {{ game.description | markdown }}
+                </div>
 
                 <dl>
 
@@ -97,6 +114,23 @@
             </div>
 
         </div>
+        {% if game.author_blurb %}
+        <div class="row content mb-2">
+            <div class="col-md-8">
+                {% if game.author %}
+                <h2>About {{ game.author }}</h2>
+                {% endif %}
+                <div class="m-2">{{ game.author_blurb | markdown }}</div>
+            </div>
+            {% if game.image_link('author') %}
+            <div class="col-md-4">
+                <div class="img-contain">
+                    <img src="{{ game.image_link('author') }}" alt="Author's image" class="img-fluid mb-3 thumbnail">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
 
     </div>
 

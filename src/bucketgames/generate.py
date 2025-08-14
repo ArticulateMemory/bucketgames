@@ -229,7 +229,6 @@ class Bucket(Page):
         return rv
 
 
-
 def to_markdown(text):
     """
     Converts the given text to Markdown format. If the text is None, returns an empty string.
