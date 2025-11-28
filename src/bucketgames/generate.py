@@ -302,7 +302,7 @@ def scan_release(game_path: pathlib.Path, release_path: pathlib.Path) -> Release
         toml = {}
 
     # The extensions for the files in the release.
-    extensions = toml.get("suffixes", [ ".gz", "bz2", ".xz", ".zip", ".apk", ".ipak", ".pdf", ".txt" ])
+    extensions = toml.get("suffixes", [ ".gz", ".bz2", ".xz", ".zip", ".apk", ".ipak", ".pdf", ".txt" ])
 
     max_date = datetime.datetime.fromtimestamp(0)
     files: list[File] = []
