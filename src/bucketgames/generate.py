@@ -379,6 +379,15 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     except tomllib.TOMLDecodeError as e:
         raise SystemExit(f"Error decoding {game_toml_path}: {e}")
 
+    # Allow importing [author].toml in [bucket]/authors with author_file for reusable author info
+    if "author_file" in game_toml:
+        author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+        try:
+            with open(author_toml_path, "rb") as f:
+                game_toml.update(tomllib.load(f))
+        except tomllib.TOMLDecodeError as e:
+            raise SystemExit(f"Error trying to open author file {author_toml_path}: {e}")
+
     game_toml.setdefault("image_extensions", DEFAULT_IMAGE_EXTENSIONS)
 
     if website_path.is_dir():
