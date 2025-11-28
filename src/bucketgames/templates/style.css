@@ -39,6 +39,10 @@ body {
     display: block;
 }
 
+#bucket-content .img-contain img {
+    max-height: 200px;
+}
+
 #game-content .img-contain {
     text-align: right;
     display: block;
