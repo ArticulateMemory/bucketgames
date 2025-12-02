@@ -72,3 +72,6 @@ def add_game(bucket: str, game_name: str):
 
     # Copy default game files
     copy("game.toml", game_path / "game.toml")
+
+    # Create the screenshot directory
+    (game_path / "screenshots").mkdir(parents=True, exist_ok=True)
