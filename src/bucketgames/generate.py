@@ -33,7 +33,8 @@ import pathlib
 import re
 import shutil
 import tomllib
-
+import urllib.parse
+from PIL import Image as PILImage # pillow image processing (dimensions)
 
 from jinja2 import Environment, select_autoescape, FileSystemLoader, ChoiceLoader, PackageLoader
 from markupsafe import Markup
@@ -95,6 +96,28 @@ class File:
     "The date of the file, typically the last modified date."
 
 
+@dataclasses.dataclass
+class Image:
+    """
+    Represents an image file in a folder.
+    """
+
+    link: str
+    "The path to the file, relative to the bucket root, using forward slashes."
+
+    name: str
+    "The name of the file, without the path."
+
+    size: int
+    "The size of the file in bytes."
+
+    width: int
+    "The width of the image in px."
+
+    height: int
+    "The height of the image in px."
+
+
 
 @dataclasses.dataclass
 class Release:
@@ -140,6 +163,9 @@ class Page:
     website_path: pathlib.Path
     "The path to the website directory for this game."
 
+    images: dict[str, Image] = dataclasses.field(default_factory=lambda: {}, init=False)
+    "Images on the page, associated by the filename without the extension"
+
     def link(self, filename: str) -> str | None:
         """
         Looks for a file with the given filename in the game's directory. If it exists, returns
@@ -170,12 +196,36 @@ class Page:
         As a side effect, it will also copy the image file to the website directory if it exists.
         """
 
+        return self.image_obj(base).link if self.image_obj(base) else None
+
+    def image_obj(self, base: str) -> Image | None:
+        """
+        Looks for an image file with the given base name in the game's directory.
+        If it exists, returns an Image object with the path (relative to the game) to the image file with the extension.
+        Otherwise, returns None.
+
+        As a side effect, it will also copy the image file to the website directory if it exists.
+        """
+
+        if base in self.images:
+            return self.images[base]
+
         image_extensions = self.toml["image_extensions"]
 
         for ext in image_extensions:
             image_link = self.link(base + ext)
             if image_link:
-                return image_link
+                full_image_path = self.path / image_link
+                width, height = PILImage.open(full_image_path).size
+
+                self.images[base] = Image(
+                    link=image_link,
+                    name=base + ext,
+                    size=pathlib.Path(full_image_path).stat().st_size,
+                    width=width,
+                    height=height, 
+                )
+                return self.images[base]
 
         return None
 
@@ -207,8 +257,6 @@ class Game(Page):
         rv = Proxy(self)
         rv.releases = [r.proxy() for r in self.releases] # type: ignore
         return rv
-
-
 
 
 @dataclasses.dataclass
@@ -403,11 +451,13 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
 
         if not d.is_dir() or d.name.startswith(("_", ".")):
             continue
-
+        
+        # Check for release dir patterns (digit, or "-dists" or release.toml)
         if re.match(r'\d', d.name) or re.search(r'-dists$', d.name) or (d / "release.toml").is_file():
             release = scan_release(game_path, d)
             releases.append(release)
 
+        # Copy release and other subdirs to the static dir, unless skipped earlier
         shutil.copytree(d, website_path / d.name)
 
     releases.sort(key=lambda r: r.date, reverse=True)
@@ -446,6 +496,9 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
 
     # Create the game object.
 
+    game_path_web = str(game_path.relative_to(str(game_path.parts[0])))
+    game_path_web = urllib.parse.quote_plus(download_path)
+
     game = Game(
         path=game_path,
         website_path=website_path,
@@ -453,7 +506,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         date=date,
         releases=releases,
         screenshots=screenshots,
-        toml=game_toml
+        toml=game_toml,
     )
 
     proxy = game.proxy()
@@ -464,6 +517,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         game_path=game_path,
         game=proxy,
         page=proxy,
+        game_path_web=game_path_web,
     )
 
     apply_template(
@@ -524,6 +578,11 @@ def generate(bucket: str) -> None:
 
     games.sort(key=lambda g: g.date, reverse=True)
 
+    if (bucket_path / "assets").is_dir():
+        if (website / "assets").is_dir():
+            shutil.rmtree(website / "assets")
+        shutil.copytree((bucket_path / "assets"), website / "assets")
+
     # Load bucket.toml.
 
     bucket_toml_path = bucket_path / "bucket.toml"
@@ -543,7 +602,7 @@ def generate(bucket: str) -> None:
         path=bucket_path,
         website_path=website,
         games=games,
-        toml=bucket_toml
+        toml=bucket_toml,
     )
 
     proxy = bucket_object.proxy()
