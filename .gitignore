@@ -11,3 +11,7 @@ wheels/
 
 # Test buckets
 spite/
+test/
+
+# Personal buckets/files
+.gitignore_local
