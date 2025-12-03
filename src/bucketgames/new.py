@@ -51,6 +51,10 @@ def init_bucket(bucket: str):
     copy("bucket.toml", bucket_path / "bucket.toml")
     copy("gitignore", bucket_path / ".gitignore")
 
+    # Create optional subdirectories
+    (bucket_path / "assets").mkdir(parents=True, exist_ok=True)
+    (bucket_path / "authors").mkdir(parents=True, exist_ok=True)
+
 
 def add_game(bucket: str, game_name: str):
     """

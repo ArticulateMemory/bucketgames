@@ -22,6 +22,7 @@
 
 from typing import Any
 
+import os
 import dataclasses
 import datetime
 import dateutil.parser
@@ -118,7 +119,6 @@ class Image:
     "The height of the image in px."
 
 
-
 @dataclasses.dataclass
 class Release:
     """
@@ -180,6 +180,9 @@ class Page:
             destination = self.website_path / filename
 
             if not destination in linked:
+                if not pathlib.Path(os.path.dirname(destination)).is_dir():
+                    os.makedirs(os.path.dirname(destination), exist_ok=True)
+                    print("Warning: Unexpected directory",os.path.dirname(destination), "created when linking image", file_path, ". This can expose undesired files.")
                 shutil.copy(file_path, destination)
                 linked.add(destination)
 
@@ -497,7 +500,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     # Create the game object.
 
     game_path_web = str(game_path.relative_to(str(game_path.parts[0])))
-    game_path_web = urllib.parse.quote_plus(download_path)
+    game_path_web = urllib.parse.quote_plus(game_path_web)
 
     game = Game(
         path=game_path,
@@ -566,6 +569,16 @@ def generate(bucket: str) -> None:
     # Copy static files.
     copy_resource(importlib.resources.files("bucketgames") / "_static", website / "_static")
 
+    # Copy assets
+    if (bucket_path / "assets").is_dir():
+        if (website / "assets").is_dir():
+            shutil.rmtree(website / "assets")
+        shutil.copytree((bucket_path / "assets"), website / "assets")
+
+    # Copy authors folder to prevent author image copy errors
+    if (bucket_path / "authors").is_dir():
+        (website / "authors").mkdir(parents=True, exist_ok=True)
+
     # Games.
 
     games: list[Game] = []
@@ -577,11 +590,6 @@ def generate(bucket: str) -> None:
             games.append(game)
 
     games.sort(key=lambda g: g.date, reverse=True)
-
-    if (bucket_path / "assets").is_dir():
-        if (website / "assets").is_dir():
-            shutil.rmtree(website / "assets")
-        shutil.copytree((bucket_path / "assets"), website / "assets")
 
     # Load bucket.toml.
 
