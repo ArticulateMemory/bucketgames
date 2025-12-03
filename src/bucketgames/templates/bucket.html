@@ -7,6 +7,7 @@
     {% if page.image_link('icon') %}
     <link rel="icon" type="image/x-icon" href="{{ page.image_link('icon') }}">
     {% endif %}
+    <link rel="preload" href="/_static/bootstrap.min.css" as="style" />
     <link href="/_static/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
@@ -19,40 +20,52 @@
 
     <div class="container" id="bucket-content">
 
-        {%if bucket.description %}
-        <div class="content mt-3">
+        {% if bucket.description %}
+        <div class="row content mt-3">
+            {% block bucket_description %}
             {{ bucket.description | markdown }}
+            {% endblock %}
         </div>
         {% endif %}
 
-        <div class="row">
+        <div class="row mt-3">
             {% for game in bucket.games %}
-            <div class="col-md-4 mt-3 content mb-3 me-3" >
-                {% if game.image_link('cover') %}
-                <a href="{{ game.directory }}/index.html" class="img-contain"><img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="img-fluid"></a>
-                {% endif %}
-
-                <h5 class="mb-1"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
-                <div class="text-muted">
-                    {% if game.author and game.author_link %}
-                    By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
-                    {% elif game.author %}
-                    By {{ game.author }}
+            {% block bucket_game scoped %}
+            <div class="margin-spacer col-md-3 mb-3">
+                <div class="content">
+                    {% if game.image_link('cover') %}
+                    <a href="{{ game.directory }}/index.html" class="img-contain"><img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="img-fluid"></a>
                     {% endif %}
-                </div>
-                <div>{{ game.short | markdown }}</div>
-            </div>
 
+                    <h5 class="mb-1"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
+                    <div class="text-muted">
+                        {% if game.author and game.author_link %}
+                        By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
+                        {% elif game.author %}
+                        By {{ game.author }}
+                        {% endif %}
+                    </div>
+                    <div>{{ game.short | markdown }}</div>
+                </div>
+            </div>
+            {% endblock %}
             {% endfor %}
         </div>
+        
+        {% block after_games %}
+        {% endblock %}
 
+        {% block bucket_footer_row %}
+        {% endblock %}
     </div>
 
+    {% block end_body %}
     <script src="/_static/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     <script>
         {% autoescape false %}{{ page.js }}{% endautoescape %}
     </script>
+    {% endblock %}
 </body>
 
 </html>

@@ -14,7 +14,7 @@ body {
     border-radius: 4px;
 }
 
-.cover-fade-mask {
+.bg-fade-mask {
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 50%, transparent 100%);
     position: absolute;
     left: 0px;
@@ -23,14 +23,15 @@ body {
     top: 0px;
 }
 
-.img-fluid-cover {
+.img-fluid-bg {
     width: 100%;
     height: auto;
     overflow: hidden;
 }
 
 #game-content .content {
-    background-color: #fffe;
+    /* Set background-color with game.toml css */
+    /* background-color: #fffe; */
     backdrop-filter: blur(5px);
 }
 
@@ -41,11 +42,7 @@ body {
 
 #bucket-content .img-contain img {
     max-height: 200px;
-}
-
-#game-content .img-contain {
-    text-align: right;
-    display: block;
+    width: auto;
 }
 
 .author-link {
@@ -58,4 +55,8 @@ body {
 
 #game-head-container {
     text-align: center;
+}
+
+.content img {
+    max-width: 100%;
 }
