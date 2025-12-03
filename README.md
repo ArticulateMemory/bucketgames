@@ -37,7 +37,7 @@ Prequisite packages will be automatically installed with uv before the first `uv
 
 - Add game: `uv run bucketgames [bucket] add [game name]`
 - Configure the game.toml file created in `bucketgames/[bucket]/[game]/game.toml`
-- Add screenshots for the game to `bucketgames/[bucket]/[game]/screenshots` (you may have to create the folder)
+- Add screenshots for the game to `bucketgames/[bucket]/[game]/screenshots`
 - Add release downloads to a new folder `bucketgames/[bucket]/[game]/[release name]`, e.g. `bucketgames/my_bucket/my_game/1.0.1/`
 - Add game cover image to `bucketgames/[bucket]/[game]/cover.jpg` or `[...]/cover.png`
 
@@ -71,5 +71,6 @@ Please be sure to:
 # Upload
 
 `uv run bucketgames [bucket] upload`
+
 
 Once complete, the site will be available at the public bucket URL. You may have to navigate to `[public bucket URL]/index.html`.
