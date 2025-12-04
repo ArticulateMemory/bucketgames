@@ -35,14 +35,16 @@
         </div>
     </div>
 
+    {% block background scoped %}
     {% if game.image_link('background') %}
     <div class="bg-fade-mask">
         <img src="{{ game.image_link('background') }}" class="img-fluid-bg" height="{{ game.image_obj('background').height }}" width="{{ game.image_obj('background').width }}" />
     </div>
     {% endif %}
+    {% endblock %}
 
-    <div class="content d-inline-block mt-2">
-        <a href="../index.html">All games</a>
+    <div id="back-button" class="mt-2">
+        <a class="btn p-2" href="../index.html">Back</a>
     </div>
 
     <div class="container mt-2" id="game-content">
@@ -70,20 +72,6 @@
                     {{ game.description | markdown }}
                     {% endblock %}
                 </div>
-
-                {% block button_links %}
-                {% for btn in game.button_links %}
-                <div>
-                    <a class="btn btn-primary mb-1" href="{{ btn.link }}">
-                        {% if btn.text %}
-                        {{ btn.text }}
-                        {% else %}
-                        Purchase {{ game.title }}
-                        {% endif %}
-                    </a>
-                </div>
-                {% endfor %}
-                {% endblock %}
 
                 <dl>
 
@@ -120,7 +108,6 @@
                         <dt>Released</dt>
                         <dd>{{ release.date | date }}</dd>
                     </dl>
-
                 </div>
                 {% endfor %}
 
@@ -128,6 +115,20 @@
                 <h2>License</h2>
                     {{ game.license | markdown }}
                 {% endif %}
+
+                {% block button_links %}
+                {% for btn in game.button_links %}
+                <div>
+                    <a class="btn btn-primary mb-1" href="{{ btn.link }}">
+                        {% if btn.text %}
+                        {{ btn.text }}
+                        {% else %}
+                        Purchase {{ game.title }}
+                        {% endif %}
+                    </a>
+                </div>
+                {% endfor %}
+                {% endblock %}
 
             </div>
 
@@ -146,10 +147,10 @@
                 {% endif %}
                 <p>{{ game.author_blurb | markdown }}</p>
             </div>
-            {% if game.image_link('author') %}
+            {% if game.image_link('author') or game.author_pic %}
             <div class="col-md">
                 <div id="author-img-contain" class="img-contain">
-                    <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ game.image_obj('author').link }}" height="{{ game.image_obj('author').height }}" width="{{ game.image_obj('author').width }}" alt="Author's image" loading="lazy">
+                    <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ game.image_obj('author').link or game.image_link(game.author_pic) }}" height="{{ game.image_obj('author').height }}" width="{{ game.image_obj('author').width }}" alt="Author's image" loading="lazy">
                 </div>
             </div>
             {% endif %}
