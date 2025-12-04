@@ -1,7 +1,7 @@
 # The title of the page.
 title = "Studio Name"
 
-# This is text that goes above the games, in Markdown format.
+# This is text that goes above the games, in Markdown format (HTML can also be used).
 description = """
 # Studio Name
 
