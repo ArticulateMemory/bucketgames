@@ -20,8 +20,6 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-name: Example
-
 jobs:
   uv-run:
     name: python
