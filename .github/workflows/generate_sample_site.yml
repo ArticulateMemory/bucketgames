@@ -40,6 +40,15 @@ jobs:
       - name: init bucket 
         run: uv run bucketgames example init
 
+      - name: add sample example game 
+        run: uv run bucketgames example add example-game
+        
+      - name: create release
+        run: mkdir ./example/1.0
+
+      - name: create release file
+        run: touch ./example/1.0/test.txt
+        
       - name: ls
         run: ls
 
