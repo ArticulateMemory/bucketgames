@@ -39,6 +39,11 @@ jobs:
       
       - name: init bucket 
         run: uv run bucketgames example init
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./example/_website
         
   # Deployment job
   deploy:
@@ -51,5 +56,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          publish_dir: ./example/_website
