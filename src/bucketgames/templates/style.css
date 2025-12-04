@@ -1,5 +1,17 @@
+:root {
+    --main-bg-rgb: 170, 221, 170; /* #ada; */
+    --bs-bg-opacity: 1;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Try to prevent opacity changes when high contrast is requested */
+    --bs-bg-opacity: 1 !important;
+  }
+}
+
 body {
-    background: #ada;
+    background: rgb(var(--main-bg-rgb));
     padding-left: 12px;
     padding-right: 12px;
 }
@@ -29,10 +41,14 @@ body {
     overflow: hidden;
 }
 
-#game-content .content {
+#game-content .content, #back-button .btn {
     /* Set background-color with game.toml css */
-    /* background-color: #fffe; */
+    background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity));
+    color: rgb(var(--bs-body-rgb));
     backdrop-filter: blur(5px);
+}
+#back-button .btn {
+    font-weight: bold;
 }
 
 #bucket-content .img-contain {
@@ -41,7 +57,7 @@ body {
 }
 
 #bucket-content .img-contain img {
-    max-height: 200px;
+    max-height: 250px;
     width: auto;
 }
 
@@ -62,17 +78,25 @@ body {
 }
 
 .m-n1 {
-  margin:-.25rem!important
+  margin:-.25rem
 }
 .m-n2 {
-  margin:-.5rem!important
+  margin:-.5rem
 }
 .m-n3 {
-  margin:-1rem!important
+  margin:-1rem
 }
 .m-n4 {
-  margin:-1.5rem!important
+  margin:-1.5rem
 }
 .m-n5 {
-  margin:-3rem!important
+  margin:-3rem
 }
+
+#bucket-content .row > div > .content {
+    height: 100%;
+}
+
+{% block additional_css scoped %}
+
+{% endblock %}
