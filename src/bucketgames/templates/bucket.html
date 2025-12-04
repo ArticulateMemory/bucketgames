@@ -21,14 +21,18 @@
     <div class="container" id="bucket-content">
 
         {% if bucket.description %}
-        <div class="row content mt-3 g-0">
-            {% block bucket_description %}
-            {{ bucket.description | markdown }}
-            {% endblock %}
+        <div class="row mt-3">
+            <div class="col">
+                <div class="content">
+                    {% block bucket_description %}
+                    {{ bucket.description | markdown }}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
         {% endif %}
 
-        <div class="row m-n3 mt-3 g-3">
+        <div class="row mt-3">
             {% for game in bucket.games %}
             {% block bucket_game scoped %}
             <div class="margin-spacer col-md-3 mb-3">
