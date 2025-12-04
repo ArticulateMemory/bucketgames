@@ -1,0 +1,12 @@
+{% extends "default/style.css" %}
+
+{# 
+    This file can be used to extend the default template with custom CSS 
+    without replacing it entirely.
+
+    To use, add CSS into the appripriate blocks and save the file as style.css
+#}
+
+{% block additional_css %}
+
+{% endblock %}

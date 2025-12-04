@@ -19,6 +19,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import os
 import importlib.resources
 import pathlib
 
@@ -50,6 +51,9 @@ def init_bucket(bucket: str):
     copy("credentials.toml", bucket_path / "credentials.toml")
     copy("bucket.toml", bucket_path / "bucket.toml")
     copy("gitignore", bucket_path / ".gitignore")
+
+    copy("bucket_example.html", bucket_path / "bucket_example.html")
+    copy("style_example.css", bucket_path / "style_example.css")
 
     # Create optional subdirectories
     (bucket_path / "assets").mkdir(parents=True, exist_ok=True)

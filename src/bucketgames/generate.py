@@ -37,13 +37,13 @@ import tomllib
 import urllib.parse
 from PIL import Image as PILImage # pillow image processing (dimensions)
 
-from jinja2 import Environment, select_autoescape, FileSystemLoader, ChoiceLoader, PackageLoader
+from jinja2 import Environment, select_autoescape, FileSystemLoader, ChoiceLoader, PackageLoader, PrefixLoader
 from markupsafe import Markup
 
 # Globals.
 bucket_path: pathlib.Path
 
-DEFAULT_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp"]
+DEFAULT_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp"] # Pillow doesn't support svg
 
 class Proxy():
     """
@@ -316,21 +316,24 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
     Keyword arguments are passed to the Jinja2 template for rendering.
     """
 
-    loaders = [ ]
+    pfx_loaders = {}
+    choice_loaders = [ ]
     if game_path:
-        loaders.append(FileSystemLoader(str(game_path)))
-    loaders.append(FileSystemLoader(str(bucket_path)))
-    loaders.append(PackageLoader("bucketgames", "templates"))
+        choice_loaders.append(FileSystemLoader(str(game_path)))
+    pfx_loaders["bucket"] = FileSystemLoader(str(bucket_path))
+    pfx_loaders["default"] = PackageLoader("bucketgames", "templates")
+
+    choice_loaders.append(PrefixLoader(pfx_loaders))
 
     env = Environment(
-        loader=ChoiceLoader(loaders),
+        loader=ChoiceLoader(choice_loaders),
         autoescape=select_autoescape(['html', 'xml'])
     )
 
     env.filters['markdown'] = to_markdown
     env.filters['date'] = to_date
 
-    t = env.get_template(template)
+    t = env.select_template([template, 'bucket/'+template, 'default/'+template])
 
     rendered = t.render(**kwargs)
 
