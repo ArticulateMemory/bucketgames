@@ -47,7 +47,7 @@ jobs:
         run: mkdir ./example/example-game/1.0
 
       - name: create release file
-        run: touch ./example/example-game/1.0/test.txt
+        run: cat "Yep! That's a text file" > ./example/example-game/1.0/test.txt
         
       - name: ls
         run: ls

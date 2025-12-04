@@ -7,8 +7,8 @@
     {% if page.image_link('icon') %}
     <link rel="icon" type="image/x-icon" href="{{ page.image_link('icon') }}">
     {% endif %}
-    <link rel="preload" href="/_static/bootstrap.min.css" as="style" />
-    <link href="/_static/bootstrap.min.css" rel="stylesheet">
+    <link rel="preload" href="./_static/bootstrap.min.css" as="style" />
+    <link href="./_static/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         {{ page.css }}
@@ -64,7 +64,7 @@
     </div>
 
     {% block end_body %}
-    <script src="/_static/bootstrap.bundle.min.js"></script>
+    <script src="./_static/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     <script>
         {% autoescape false %}{{ page.js }}{% endautoescape %}
