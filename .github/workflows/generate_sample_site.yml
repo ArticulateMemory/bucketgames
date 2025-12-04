@@ -44,10 +44,10 @@ jobs:
         run: uv run bucketgames example add example-game
         
       - name: create release
-        run: mkdir ./example/1.0
+        run: mkdir ./example/example-game/1.0
 
       - name: create release file
-        run: touch ./example/1.0/test.txt
+        run: touch ./example/example-game/1.0/test.txt
         
       - name: ls
         run: ls
