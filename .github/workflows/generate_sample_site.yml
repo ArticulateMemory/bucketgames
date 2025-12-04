@@ -40,6 +40,12 @@ jobs:
       - name: init bucket 
         run: uv run bucketgames example init
 
+      - name: ls
+        run: ls
+
+      - name: generate
+        run: uv run bucketgames example generate
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
