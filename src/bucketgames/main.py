@@ -35,6 +35,8 @@ def main():
     sps = ap.add_subparsers(dest="command", required=True)
 
     sp = sps.add_parser("upload", help="Sync local directory to S3-compatible storage")
+    sp.add_argument("--dry-run", action="store_true", help="Preview the upload without performing it.")
+    sp.add_argument("--delete-missing-files", action="store_true", help="Delete files from remote storage that are missing locally.")
 
     sp = sps.add_parser("generate", help="Generate website files for a bucket")
     sp.add_argument("--serve", action="store_true", help="Serve the generated website files immediately after generation.")
@@ -50,7 +52,7 @@ def main():
 
     match args.command:
         case "upload":
-            upload.upload(args.bucket)
+            upload.upload(args.bucket, dry_run=args.dry_run, delete_missing_files=args.delete_missing_files)
         case "generate":
             generate.generate(args.bucket)
             if args.serve:

@@ -223,7 +223,7 @@ def sync_directory_to_s3(
                     if local_md5 == s3_etag and local_size == s3_size:
                         needs_upload = False
                         if callback:
-                            callback("skipped", relative_key, None)
+                            callback("dryrun_skipped" if dry_run else "skipped", relative_key, None)
 
                 if needs_upload:
                     if dry_run:

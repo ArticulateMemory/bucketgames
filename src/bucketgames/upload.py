@@ -86,12 +86,16 @@ def upload_callback(event_type: str, key: str | None = None, error_info: str | N
         print(f"Skipped: {key}")
     elif event_type == "error":
         print(f"Error with {key}: {error_info}")
+    elif event_type == "dryrun_error":
+        print(f"[Dry Run][Error] with {key}: {error_info}")
     elif event_type == "dryrun_upload":
         print(f"Dry run upload: {key}")
     elif event_type == "dryrun_delete":
         print(f"Dry run delete: {key}")
+    elif event_type == "dryrun_skipped":
+        print(f"Dry run skipped: {key}")
 
-def upload(bucket: str) -> None:
+def upload(bucket: str, dry_run=False, delete_missing_files=False) -> None:
     """
     Uploads a local directory to the specified S3-compatible bucket.
     """
@@ -112,6 +116,7 @@ def upload(bucket: str) -> None:
         aws_secret_access_key=credentials.secret_key,
         endpoint_url=credentials.endpoint_url,
         region_name=credentials.region,
-        dry_run=False,
-        callback=upload_callback
+        dry_run=dry_run,
+        callback=upload_callback,
+        delete_missing=delete_missing_files,
     )
