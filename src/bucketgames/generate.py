@@ -43,7 +43,7 @@ from markupsafe import Markup
 # Globals.
 bucket_path: pathlib.Path
 
-DEFAULT_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp"] # Pillow doesn't support svg
+DEFAULT_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico"] # Pillow doesn't support svg
 
 class Proxy():
     """
