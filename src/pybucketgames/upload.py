@@ -102,11 +102,11 @@ def upload(bucket: str, dry_run=False, delete_missing_files=False) -> None:
 
     credentials = Credentials(bucket)
 
-    from bucketgames.s3 import sync_directory_to_s3
+    from pybucketgames.s3 import sync_directory_to_s3
 
     website = pathlib.Path(bucket) / "_website"
     if not website.is_dir():
-        raise SystemExit(f"Website directory not found: {website}\nPlease run `bucketgames build <bucket>` first.")
+        raise SystemExit(f"Website directory not found: {website}\nPlease run `pybucketgames <bucket> init` first.")
 
     sync_directory_to_s3(
         local_directory=str(website),

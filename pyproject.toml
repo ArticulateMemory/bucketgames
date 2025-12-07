@@ -1,5 +1,5 @@
 [project]
-name = "bucketgames"
+name = "pybucketgames"
 version = "0.1.0"
 description = "Tool for hosting game distributions in buckets."
 readme = "README.md"
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-bucketgames = "bucketgames.main:main"
+pybucketgames = "pybucketgames.main:main"
 
 [build-system]
 requires = ["hatchling"]
