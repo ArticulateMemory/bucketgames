@@ -1,0 +1,122 @@
+:root {
+    --main-bg-rgb: 170, 221, 170; /* #ada; */
+    --bs-bg-opacity: 1;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    /* Try to prevent opacity changes when high contrast is requested */
+    --bs-bg-opacity: 1 !important;
+  }
+}
+
+body {
+    background: rgb(var(--main-bg-rgb));
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.content {
+    padding: 12px;
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+
+.thumbnail {
+    border-radius: 4px;
+}
+
+.bg-fade-mask {
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 50%, transparent 100%);
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    z-index: -1;
+    top: 0px;
+}
+
+.img-fluid-bg {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+#game-content .content, #back-button .btn {
+    /* Set background-color with game.toml css */
+    background-color: rgba(var(--bs-body-bg-rgb), var(--bs-bg-opacity));
+    color: rgb(var(--bs-body-rgb));
+    backdrop-filter: blur(5px);
+}
+#back-button .btn {
+    font-weight: bold;
+}
+
+#bucket-content .img-contain {
+    text-align: center;
+    display: block;
+}
+
+#bucket-content .img-contain img {
+    max-height: 250px;
+    object-fit: contain;
+    object-position: center 0;
+
+    /* Override this with the aspect ratio that best fits your cover images */
+    /* aspect-ratio: 630 / 500; */
+}
+
+.author-link {
+    text-decoration: none;
+}
+.author-link:hover {
+    text-decoration: underline;
+}
+
+#game-title {
+    font-weight: bolder;
+}
+
+#game-head-container {
+    text-align: center;
+}
+
+.content img {
+    max-width: 100%;
+}
+
+.m-n1 {
+  margin:-.25rem
+}
+.m-n2 {
+  margin:-.5rem
+}
+.m-n3 {
+  margin:-1rem
+}
+.m-n4 {
+  margin:-1.5rem
+}
+.m-n5 {
+  margin:-3rem
+}
+
+#bucket-content .row > div > .card {
+    height: 100%;
+}
+
+#bucket-content .card .card-title a {
+    font-weight: bold;
+}
+
+#bucket-content .card .card-title a {
+    text-decoration: none;
+}
+
+#bucket-content .card .card-title a:hover {
+    text-decoration: underline;
+}
+
+
+{% block additional_css scoped %}
+
+{% endblock %}

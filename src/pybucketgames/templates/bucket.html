@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if page.image_link('icon') %}
+    <link rel="icon" type="image/x-icon" href="{{ page.image_link('icon') }}">
+    {% endif %}
+    <link rel="preload" href="./_static/bootstrap.min.css" as="style" />
+    <link href="./_static/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        {{ page.css }}
+    </style>
+    <title>{{ page.title }}</title>
+</head>
+
+<body>
+
+    <div class="container" id="bucket-content">
+
+        {% if bucket.description %}
+        <div class="row mt-3">
+            <div class="col">
+                <div class="content">
+                    {% block bucket_description %}
+                    {{ bucket.description | markdown }}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row mt-3">
+            {% for game in bucket.games %}
+            {% block bucket_game scoped %}
+            <div class="margin-spacer col-md-3 mb-3">
+                <div class="card">
+                    {% if game.image_link('cover') %}
+                    <a href="{{ game.directory }}/index.html" class="card-img-top img-contain">
+                        <img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
+                    </a>
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title mb-0"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
+                        <div class="text-muted">
+                            {% if game.author and game.author_link %}
+                            By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
+                            {% elif game.author %}
+                            By {{ game.author }}
+                            {% endif %}
+                        </div>
+                        <div class="card-text">{{ game.short | markdown }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+            {% endfor %}
+        </div>
+        
+        {% block after_games %}
+        {% endblock %}
+
+        {% block bucket_footer_row %}
+        <div class="row mb-3 footer-row">
+            <div class="col">
+                <div class="footer-contain">
+                    {% block before_bucket_footer %}
+                    {% endblock %}
+                    <p>
+                        Powered by <a href="https://github.com/ArticulateMemory/pybucketgames">pyBucket Games</a>
+                    </p>
+                    {% block after_bucket_footer %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+
+    {% block end_body %}
+    <script src="./_static/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        {% autoescape false %}{{ page.js }}{% endautoescape %}
+    </script>
+    {% endblock %}
+</body>
+
+</html>
