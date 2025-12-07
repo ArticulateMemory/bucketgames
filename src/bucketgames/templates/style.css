@@ -58,11 +58,18 @@ body {
 
 #bucket-content .img-contain img {
     max-height: 250px;
-    width: auto;
+    object-fit: contain;
+    object-position: center 0;
+
+    /* Override this with the aspect ratio that best fits your cover images */
+    /* aspect-ratio: 630 / 500; */
 }
 
 .author-link {
     text-decoration: none;
+}
+.author-link:hover {
+    text-decoration: underline;
 }
 
 #game-title {
@@ -93,9 +100,22 @@ body {
   margin:-3rem
 }
 
-#bucket-content .row > div > .content {
+#bucket-content .row > div > .card {
     height: 100%;
 }
+
+#bucket-content .card .card-title a {
+    font-weight: bold;
+}
+
+#bucket-content .card .card-title a {
+    text-decoration: none;
+}
+
+#bucket-content .card .card-title a:hover {
+    text-decoration: underline;
+}
+
 
 {% block additional_css scoped %}
 

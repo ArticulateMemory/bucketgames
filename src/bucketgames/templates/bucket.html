@@ -36,20 +36,24 @@
             {% for game in bucket.games %}
             {% block bucket_game scoped %}
             <div class="margin-spacer col-md-3 mb-3">
-                <div class="content">
+                <div class="card">
                     {% if game.image_link('cover') %}
-                    <a href="{{ game.directory }}/index.html" class="img-contain"><img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="img-fluid"></a>
+                    <a href="{{ game.directory }}/index.html" class="card-img-top img-contain">
+                        <img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
+                    </a>
                     {% endif %}
 
-                    <h5 class="mb-1"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
-                    <div class="text-muted">
-                        {% if game.author and game.author_link %}
-                        By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
-                        {% elif game.author %}
-                        By {{ game.author }}
-                        {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title mb-0"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
+                        <div class="text-muted">
+                            {% if game.author and game.author_link %}
+                            By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
+                            {% elif game.author %}
+                            By {{ game.author }}
+                            {% endif %}
+                        </div>
+                        <div class="card-text">{{ game.short | markdown }}</div>
                     </div>
-                    <div>{{ game.short | markdown }}</div>
                 </div>
             </div>
             {% endblock %}

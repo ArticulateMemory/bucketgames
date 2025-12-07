@@ -8,5 +8,8 @@
 #}
 
 {% block additional_css %}
-
+#bucket-content .img-contain img {
+    /* The aspect ratio that best fits your cover images */
+    /* aspect-ratio: 630 / 500; */
+}
 {% endblock %}
