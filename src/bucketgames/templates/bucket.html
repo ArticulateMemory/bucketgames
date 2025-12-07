@@ -64,6 +64,19 @@
         {% endblock %}
 
         {% block bucket_footer_row %}
+        <div class="row mb-3 footer-row">
+            <div class="col">
+                <div class="footer-contain">
+                    {% block before_bucket_footer %}
+                    {% endblock %}
+                    <p>
+                        Powered by <a href="https://github.com/ArticulateMemory/bucketgames">Bucket Games</a>
+                    </p>
+                    {% block after_bucket_footer %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
         {% endblock %}
     </div>
 
