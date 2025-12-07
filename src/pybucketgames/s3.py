@@ -28,7 +28,7 @@ Supports AWS S3, Cloudflare R2, Backblaze B2, MinIO, and other S3-compatible ser
 USAGE EXAMPLES:
 
 1. AWS S3 (using environment variables for credentials):
-    from bucketgames.s3 import sync_directory_to_s3
+    from pybucketgames.s3 import sync_directory_to_s3
 
     results = sync_directory_to_s3(
         local_directory="/path/to/local/folder",
@@ -39,7 +39,7 @@ USAGE EXAMPLES:
     )
 
 2. Cloudflare R2:
-    from bucketgames.s3 import sync_directory_to_s3
+    from pybucketgames.s3 import sync_directory_to_s3
 
     results = sync_directory_to_s3(
         local_directory="/path/to/local/folder",
@@ -53,7 +53,7 @@ USAGE EXAMPLES:
     )
 
 3. Backblaze B2:
-    from bucketgames.s3 import sync_directory_to_s3
+    from pybucketgames.s3 import sync_directory_to_s3
 
     results = sync_directory_to_s3(
         local_directory="/path/to/local/folder",

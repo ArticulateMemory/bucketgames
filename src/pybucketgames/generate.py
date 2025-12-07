@@ -321,7 +321,7 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
     if game_path:
         choice_loaders.append(FileSystemLoader(str(game_path)))
     pfx_loaders["bucket"] = FileSystemLoader(str(bucket_path))
-    pfx_loaders["default"] = PackageLoader("bucketgames", "templates")
+    pfx_loaders["default"] = PackageLoader("pybucketgames", "templates")
 
     choice_loaders.append(PrefixLoader(pfx_loaders))
 
@@ -570,7 +570,7 @@ def generate(bucket: str) -> None:
     website.mkdir(exist_ok=True)
 
     # Copy static files.
-    copy_resource(importlib.resources.files("bucketgames") / "_static", website / "_static")
+    copy_resource(importlib.resources.files("pybucketgames") / "_static", website / "_static")
 
     # Copy assets
     if (bucket_path / "assets").is_dir():

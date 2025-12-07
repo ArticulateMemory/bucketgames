@@ -29,7 +29,7 @@ def copy(resource: str, destination: pathlib.Path):
     Copy a resource file from the package to the specified destination.
     """
 
-    resource_path = importlib.resources.files("bucketgames") / "resources" / resource
+    resource_path = importlib.resources.files("pybucketgames") / "resources" / resource
     resource_text = resource_path.read_text()
     destination.write_text(resource_text)
 
