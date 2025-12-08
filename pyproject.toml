@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "Tool for hosting game distributions in buckets."
 readme = "README.md"
 authors = [
-    { name = "Tom Rothamel", email = "tom@rothamel.us" }
+    { name = "Tom Rothamel", email = "tom@rothamel.us" },
+    { name = "ArticulateMemory", email = "85971228+ArticulateMemory@users.noreply.github.com" }
 ]
 requires-python = ">=3.13"
 dependencies = [
