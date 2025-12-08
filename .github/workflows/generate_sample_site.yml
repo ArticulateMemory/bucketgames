@@ -41,16 +41,10 @@ jobs:
         run: uv run pybucketgames example init
 
       - name: add sample example game 
-        run: uv run pybucketgames example add example-game
-        
-      - name: create release
-        run: mkdir ./example/example-game/1.0
-        
-      - name: ls
-        run: ls
+        run: uv run pybucketgames example add example-game --use-sample-assets
 
       - name: generate
-        run: uv run pybucketgames example generate --use-sample-assets
+        run: uv run pybucketgames example generate
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
