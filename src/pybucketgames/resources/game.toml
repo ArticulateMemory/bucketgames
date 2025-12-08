@@ -4,17 +4,28 @@ title = "Game Name"
 # A short blurb about the game, used in the bucket page, in Markdown format.
 short = "A new game."
 
-# This is text that goes above the games, in Markdown format.
+# This is text that goes above the games, in Markdown format (HTML can also be used!).
 description = """
-# Game Name
-
 A new game - but far from the last one.
 """
 
+# Optional author information
+#author="Cool Author"
+#author_link="https://mycoolwebsite.example.com"
+#author_blurb="""Some Markdown text about the author"""
+
+#author_file="coolauthor.toml" # Relative to rebucketgames/authors . Can contains reusable author info
+#author_pic="coolauthor.png" # will look for an "author" img by default, but this can be added to the author_file and reused
+
+#platforms = "PC, Mac, and Linux"
+
+#made_with = ""
+
+
 # The license for the game, in markdown format.
-license = """
-License text goes here.
-"""
+# license = """
+# License text goes here.
+# """
 
 # Custom CSS for the page.
 css = """
@@ -25,3 +36,6 @@ css = """
 js = """
 // JavaScript goes here.
 """
+
+# Defaults to the date of the last modified file
+#date = "1-1-2025"

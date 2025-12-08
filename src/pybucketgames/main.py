@@ -47,6 +47,7 @@ def main():
 
     sp = sps.add_parser("add", help="Add a new game to the bucket")
     sp.add_argument("game", help="The name of the game to add.")
+    sp.add_argument("--use-sample-assets", action="store_true", help="Include sample assets in the new game files.")
 
     args = ap.parse_args()
 
@@ -62,7 +63,7 @@ def main():
         case "init":
             new.init_bucket(args.bucket)
         case "add":
-            new.add_game(args.bucket, args.game)
+            new.add_game(args.bucket, args.game, copy_sample_assets=args.use_sample_assets)
         case _:
             ap.error("Unknown command.")
 

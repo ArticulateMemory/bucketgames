@@ -45,15 +45,12 @@ jobs:
         
       - name: create release
         run: mkdir ./example/example-game/1.0
-
-      - name: create release file
-        run: echo "Yep! That's a text file" > ./example/example-game/1.0/test.txt
         
       - name: ls
         run: ls
 
       - name: generate
-        run: uv run pybucketgames example generate
+        run: uv run pybucketgames example generate --use-sample-assets
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

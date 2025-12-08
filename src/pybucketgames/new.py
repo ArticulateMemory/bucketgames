@@ -22,7 +22,7 @@
 import os
 import importlib.resources
 import pathlib
-
+import shutil
 
 def copy(resource: str, destination: pathlib.Path):
     """
@@ -30,9 +30,7 @@ def copy(resource: str, destination: pathlib.Path):
     """
 
     resource_path = importlib.resources.files("pybucketgames") / "resources" / resource
-    resource_text = resource_path.read_text()
-    destination.write_text(resource_text)
-
+    shutil.copy(resource_path, destination)
 
 def init_bucket(bucket: str):
     """
@@ -60,7 +58,7 @@ def init_bucket(bucket: str):
     (bucket_path / "authors").mkdir(parents=True, exist_ok=True)
 
 
-def add_game(bucket: str, game_name: str):
+def add_game(bucket: str, game_name: str, copy_sample_assets: bool = False):
     """
     Add a new game to the bucket.
     """
@@ -83,3 +81,17 @@ def add_game(bucket: str, game_name: str):
 
     # Create the screenshot directory
     (game_path / "screenshots").mkdir(parents=True, exist_ok=True)
+
+    if copy_sample_assets:
+        copy("sample_assets/cover.webp", game_path / "cover.webp")
+        copy("sample_assets/icon.ico", game_path / "icon.ico")
+        copy("sample_assets/cover.webp", game_path / "screenshots" / "cover.webp")
+
+        (game_path / "1.0").mkdir(parents=True, exist_ok=True)
+
+        copy("release.toml", game_path / "1.0" / "release.toml")
+
+        # Write a sample release file
+        with open((game_path / "1.0") / 'download.txt', 'w') as fp:
+            fp.write("This is a sample text file!")
+            

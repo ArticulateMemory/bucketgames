@@ -1,0 +1,11 @@
+# This is an example release toml, having a release toml is optional.
+# pyBucket will scan for any folders matching the naming scheme (e.g. "1.0") with release files (e.g. zip files)
+
+# File extensions to include in the release
+#suffixes = [ ".gz", ".bz2", ".xz", ".zip", ".apk", ".ipak", ".pdf", ".txt" ]
+
+# Default version is parsed from the folder name
+#version = "1.0"
+
+# Default date is the date of the last modified file
+#date = "1-1-2025"
