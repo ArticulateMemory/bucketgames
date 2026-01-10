@@ -58,7 +58,7 @@ body {
 
 #bucket-content .img-contain img {
     max-height: 250px;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center 0;
 
     /* Override this with the aspect ratio that best fits your cover images */
