@@ -5,7 +5,13 @@
 
 @media (prefers-contrast: more) {
   :root {
-    /* Try to prevent opacity changes when high contrast is requested */
+    /* Try to prevent opacity changes */
+    --bs-bg-opacity: 1 !important;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    /* Try to prevent opacity changes */
     --bs-bg-opacity: 1 !important;
   }
 }
@@ -57,7 +63,7 @@ body {
 }
 
 #bucket-content .img-contain img {
-    max-height: 250px;
+    max-height: 500px;
     object-fit: cover;
     object-position: center 0;
 
