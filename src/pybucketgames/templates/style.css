@@ -43,6 +43,11 @@ body {
     overflow: clip;
 }
 
+.content img {
+    max-width: 100%;
+    height: auto;
+}
+
 .img-fluid-bg {
     width: 100%;
     height: auto;
@@ -85,10 +90,6 @@ body {
 
 #game-head-container {
     text-align: center;
-}
-
-.content img {
-    max-width: 100%;
 }
 
 .m-n1 {
