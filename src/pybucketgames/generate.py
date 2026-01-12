@@ -40,6 +40,8 @@ from PIL import Image as PILImage # pillow image processing (dimensions)
 from jinja2 import Environment, select_autoescape, FileSystemLoader, ChoiceLoader, PackageLoader, PrefixLoader
 from markupsafe import Markup
 
+from feedgen.feed import FeedGenerator
+
 # Globals.
 bucket_path: pathlib.Path
 
@@ -478,6 +480,8 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     if "date" in game_toml:
         try:
             date = dateutil.parser.parse(game_toml["date"])
+            if date.tzinfo is None:
+                date = date.replace(tzinfo = datetime.timezone.utc)
         except ValueError as e:
             raise SystemExit(f"Invalid date key format in {game_toml_path}: {e}")
 
@@ -555,6 +559,37 @@ def copy_resource(source: importlib.resources.abc.Traversable, target: pathlib.P
             copy_resource(child, target / child.name)
     else:
         target.write_bytes(source.read_bytes())
+
+# NOT safe for sanitization, only for making HTML human readable.
+def _strip_tags_unsafe(html) -> str:
+    return re.sub(r'<[^<]+>', '', html)
+
+def generate_rss(games: list[Game], bucket_path: pathlib.Path, bucket_object: Bucket, website_path: pathlib.Path) -> None:
+    if "base_url" not in bucket_object.toml:
+        raise Exception("base_url is required in bucket.toml to generate RSS")
+    base_url = bucket_object.toml["base_url"]
+
+    feed = FeedGenerator()
+    feed.title(bucket_object.toml["title"] or '')
+    feed.link(href=base_url)
+    feed.subtitle(_strip_tags_unsafe(bucket_object.toml["description"]) or "No description available")
+    feed.language(bucket_object.toml.setdefault("lang_code" ,'en'))
+    
+    logo_link = bucket_object.image_link('icon')
+    if logo_link is not None:
+        feed.logo(base_url + logo_link)
+
+    games_rev = games[::-1]
+
+    for g in games_rev:
+        i = feed.add_entry()
+        i.id(g.directory)
+        i.title(g.toml["title"] or "Untitled")
+        i.description(_strip_tags_unsafe(g.toml["short"]) or "")
+        i.link(href=base_url + g.directory + "/index.html")
+        i.pubDate(g.date)
+
+    feed.rss_file(website_path / 'rss.xml')
 
 
 def generate(bucket: str) -> None:
@@ -639,5 +674,8 @@ def generate(bucket: str) -> None:
         game=proxy,
         page=proxy,
     )
+
+    if "enable_rss" in bucket_object.toml and bucket_object.toml["enable_rss"]:
+        generate_rss(games, bucket_path, bucket_object, website)
 
     print("Website files generated successfully.")

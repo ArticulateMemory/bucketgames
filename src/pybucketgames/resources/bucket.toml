@@ -1,3 +1,6 @@
+# URL for your bucket page, with a trailing slash
+base_url = "https://www.example.changeme/"
+
 # The title of the page.
 title = "Studio Name"
 
@@ -7,6 +10,12 @@ description = """
 
 We make games and then we put them in a bucket.
 """
+
+# Whether to enable your RSS feed
+enable_rss = false
+
+# Language for your site (currently only used for RSS)
+lang_code = "en"
 
 # Custom CSS for the page.
 css = """
