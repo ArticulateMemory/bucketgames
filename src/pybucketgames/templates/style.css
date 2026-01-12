@@ -39,12 +39,13 @@ body {
     right: 0px;
     z-index: -1;
     top: 0px;
+    max-height: 100%;
+    overflow: clip;
 }
 
 .img-fluid-bg {
     width: 100%;
     height: auto;
-    overflow: hidden;
 }
 
 #game-content .content, #back-button .btn {
