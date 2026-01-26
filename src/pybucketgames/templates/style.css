@@ -124,6 +124,23 @@ body {
     text-decoration: underline;
 }
 
+#game-embed-iframe {
+    aspect-ratio: 16/9;
+    background: transparent;
+    border: 0;
+    width: 100%;
+}
+
+details#game-embed-contain summary {
+    display: block;
+    aspect-ratio: 16/9;
+    align-content: center;
+    text-align: center;
+}
+
+details#game-embed-contain[open] summary {
+    display: none;
+}
 
 {% block additional_css scoped %}
 

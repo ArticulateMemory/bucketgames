@@ -7,7 +7,7 @@
 {% if page.image_link('icon') %}
     <link rel="icon" type="image/x-icon" href="{{ page.image_link('icon') }}">
 {% endif %}
-    <link rel="preload" href="/_static/bootstrap.min.css" as="style" />
+    <link rel="preload" href="../_static/bootstrap.min.css" as="style" />
     <link href="../_static/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     {% if game.image_link('background') %}
@@ -50,6 +50,17 @@
     </div>
 
     <div class="container mt-2" id="game-content">
+        
+        {% block game_embed_scoped %}
+        {% if game.has_embed %}
+        <div class="row content mb-2">
+            <details id="game-embed-contain">
+                <summary id="game-embed-preview"><span>Click to Play</span></summary>
+                <iframe src="./embed/index.html" id="game-embed-iframe"></iframe>
+            </details>
+        </div>
+        {% endif %}
+        {% endblock %}
 
         <div class="row content mb-2">
 

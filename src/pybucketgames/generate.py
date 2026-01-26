@@ -253,6 +253,9 @@ class Game(Page):
     toml: dict[str, Any]
     "The contents of the game's `game.toml` file, if it exists."
 
+    has_embed: bool
+    "Whether the game has an embed at embed/index.html"
+
     def proxy(self) -> Proxy:
         """
         Returns a Proxy object for this game, allowing access to its attributes and toml keys.
@@ -468,6 +471,12 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
 
     releases.sort(key=lambda r: r.date, reverse=True)
 
+    # Embed
+
+    has_embed = False
+    if (game_path / "embed/index.html").is_file():
+        has_embed = True
+
     # Title.
 
     if "title" not in game_toml:
@@ -513,6 +522,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         releases=releases,
         screenshots=screenshots,
         toml=game_toml,
+        has_embed=has_embed
     )
 
     proxy = game.proxy()
