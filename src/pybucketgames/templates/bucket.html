@@ -41,7 +41,7 @@
                 <div class="card">
                     {% if game.image_link('cover') %}
                     <a href="{{ game.directory }}/index.html" class="card-img-top img-contain">
-                        <img src="{{game.directory}}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
+                        <img src="{{ game.directory }}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
                     </a>
                     {% endif %}
 

@@ -16,6 +16,12 @@
     <style>
         {{ page.css }}
     </style>
+    <meta property="og:title" content="{{ game.title }}" />
+    <meta property="og:url" content="{{ base_url }}{{ game.directory }}/index.html" />
+    <meta property="og:description" content="{{ game.short }}" />
+    {% if game.image_link('cover') %}
+    <meta property="og:image" content="{{ base_url }}{{ game.directory }}/{{ game.image_link('cover') }}" />
+    {% endif %}
     <title>{{ game.title }}</title>
     {% block end_head scoped%}
     {% endblock %}
