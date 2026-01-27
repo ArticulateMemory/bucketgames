@@ -47,6 +47,8 @@ bucket_path: pathlib.Path
 
 DEFAULT_IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico"] # Pillow doesn't support svg
 
+base_url: str
+
 class Proxy():
     """
     Proxies attributes through to the underlying object or its toml attribute.
@@ -564,7 +566,9 @@ def copy_resource(source: importlib.resources.abc.Traversable, target: pathlib.P
 def _strip_tags_unsafe(html) -> str:
     return re.sub(r'<[^<]+>', '', html)
 
-def generate_rss(games: list[Game], bucket_path: pathlib.Path, bucket_object: Bucket, website_path: pathlib.Path) -> None:
+def generate_rss(games: list[Game], bucket_object: Bucket, website_path: pathlib.Path) -> None:
+    global base_url
+
     if "base_url" not in bucket_object.toml:
         raise Exception("base_url is required in bucket.toml to generate RSS")
     base_url = bucket_object.toml["base_url"]
@@ -591,13 +595,12 @@ def generate_rss(games: list[Game], bucket_path: pathlib.Path, bucket_object: Bu
 
     feed.rss_file(website_path / 'rss.xml')
 
-
 def generate(bucket: str) -> None:
     """
     Generates the website files for the specified bucket.
     """
 
-    global bucket_path
+    global bucket_path, base_url
 
     bucket_path = pathlib.Path(bucket)
     website = bucket_path / "_website"
@@ -644,6 +647,10 @@ def generate(bucket: str) -> None:
 
     bucket_toml.setdefault("image_extensions", DEFAULT_IMAGE_EXTENSIONS)
 
+    if "base_url" not in bucket_toml:
+        raise Exception("base_url is required in bucket.toml to generate RSS")
+    base_url = bucket_toml["base_url"]
+
     bucket_object = Bucket(
         path=bucket_path,
         website_path=website,
@@ -676,6 +683,6 @@ def generate(bucket: str) -> None:
     )
 
     if "enable_rss" in bucket_object.toml and bucket_object.toml["enable_rss"]:
-        generate_rss(games, bucket_path, bucket_object, website)
+        generate_rss(games, bucket_object, website)
 
     print("Website files generated successfully.")
