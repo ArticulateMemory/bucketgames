@@ -6,7 +6,9 @@ pkgs.mkShellNoCC {
        git uv python313
     ];
 
-#     shellHook = ''
-#         echo "Available commands: git, uv"
-#     '';
+    shellHook = ''
+        alias pybucketgames="uv run pybucketgames";
+        
+        echo "Available commands: pybucketgames, uv, git"
+    '';
 }
