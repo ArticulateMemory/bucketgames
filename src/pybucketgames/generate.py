@@ -320,6 +320,8 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
     Keyword arguments are passed to the Jinja2 template for rendering.
     """
 
+    global base_url
+
     pfx_loaders = {}
     choice_loaders = [ ]
     if game_path:
@@ -338,6 +340,8 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
     env.filters['date'] = to_date
 
     t = env.select_template([template, 'bucket/'+template, 'default/'+template])
+
+    kwargs["base_url"] = base_url
 
     rendered = t.render(**kwargs)
 
@@ -620,18 +624,6 @@ def generate(bucket: str) -> None:
     if (bucket_path / "authors").is_dir():
         (website / "authors").mkdir(parents=True, exist_ok=True)
 
-    # Games.
-
-    games: list[Game] = []
-
-    for i in bucket_path.iterdir():
-
-        if (i / "game.toml").is_file():
-            game = generate_game(i, website / i.name)
-            games.append(game)
-
-    games.sort(key=lambda g: g.date, reverse=True)
-
     # Load bucket.toml.
 
     bucket_toml_path = bucket_path / "bucket.toml"
@@ -650,6 +642,20 @@ def generate(bucket: str) -> None:
     if "base_url" not in bucket_toml:
         raise Exception("base_url is required in bucket.toml to generate RSS")
     base_url = bucket_toml["base_url"]
+
+    # Games.
+
+    games: list[Game] = []
+
+    for i in bucket_path.iterdir():
+
+        if (i / "game.toml").is_file():
+            game = generate_game(i, website / i.name)
+            games.append(game)
+
+    games.sort(key=lambda g: g.date, reverse=True)
+
+    # Render bucket templates
 
     bucket_object = Bucket(
         path=bucket_path,
