@@ -87,7 +87,8 @@ def sync_directory_to_s3(
     endpoint_url: Optional[str] = None,
     delete_missing: bool = False,
     dry_run: bool = False,
-    callback=None
+    callback=None,
+    enable_extra_s3_args=False
 ) -> None:
     """
     Synchronize a local directory with an S3-compatible bucket directory.
@@ -123,7 +124,7 @@ def sync_directory_to_s3(
                     "error"          - An error occurred
                 key (str or None): The relative file path or S3 key involved, or None for general errors
                 error_info (str or None): Error message if event_type is "error", otherwise None
-
+        enable_extra_s3_args: If true, sends ExtraArgs on upload such as ContentType that may not be compatible with all providers
     Returns:
         None
     """
@@ -234,7 +235,8 @@ def sync_directory_to_s3(
                             s3_client.upload_file(
                                 str(local_file_path),
                                 bucket_name,
-                                s3_key
+                                s3_key,
+                                ExtraArgs = _get_extra_args(s3_key, enable_extra_s3_args)
                             )
                             if callback:
                                 callback("uploaded", relative_key, None)
@@ -297,3 +299,15 @@ def _calculate_md5(file_path: Path) -> str:
         return hash_md5.hexdigest()
     else:
         return f"{hash_md5.hexdigest()}-{parts}"
+
+def _get_extra_args(s3_key:str, enable_extra_s3_args:bool)-> dict | None:
+    if not enable_extra_s3_args:
+        return None
+    extra_args = {}
+    if s3_key.endswith('.html'):
+        extra_args['ContentType'] = 'text/html'
+    elif s3_key.endswith('.css'):
+        extra_args['ContentType'] = 'text/css'
+    elif s3_key.endswith('.js'):
+        extra_args['ContentType'] = 'text/javascript'
+    return extra_args

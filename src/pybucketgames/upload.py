@@ -37,6 +37,9 @@ class Credentials:
     region: str
     "The region for S3-compatible storage, if applicable."
 
+    enable_extra_s3_args: bool
+    "Whether to add ExtraArgs such as ContentType when uploading files to S3 storage"
+
     def __init__(self, bucket: str) -> None:
         """
         Reads credentials from the file 'credentials.toml' in the bucket directorty.
@@ -67,6 +70,7 @@ class Credentials:
             self.secret_key = get("secret_key")
             self.endpoint_url = get("endpoint_url")
             self.region = get("region") if "region" in data else "auto"
+            self.enable_extra_s3_args = data["enable_extra_s3_args"] if "enable_extra_s3_args" in data and isinstance(data["enable_extra_s3_args"], bool) else False
 
         except FileNotFoundError:
             raise SystemExit(f"Credentials file not found: {credentials_file}")
@@ -119,4 +123,5 @@ def upload(bucket: str, dry_run=False, delete_missing_files=False) -> None:
         dry_run=dry_run,
         callback=upload_callback,
         delete_missing=delete_missing_files,
+        enable_extra_s3_args=credentials.enable_extra_s3_args,
     )
