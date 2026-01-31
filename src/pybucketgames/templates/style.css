@@ -124,7 +124,6 @@ body {
     text-decoration: underline;
 }
 
-
 {% block additional_css scoped %}
 
 {% endblock %}

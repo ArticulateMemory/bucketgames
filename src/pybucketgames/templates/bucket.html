@@ -14,6 +14,13 @@
         {{ page.css }}
     </style>
     <title>{{ page.title }}</title>
+    <meta property="og:title" content="{{ page.title }}" />
+    <meta property="og:url" content="{{ base_url }}index.html" />
+    <meta property="og:site_name" content="{{ page.title }}" />
+    <meta property="og:type" content="website" />
+    {% if page.image_link('icon') %}
+    <meta property="og:image" content="{{ base_url }}{{ page.image_link('icon') }}" />
+    {% endif %}
     {% block end_head scoped%}
     {% endblock %}
 </head>
