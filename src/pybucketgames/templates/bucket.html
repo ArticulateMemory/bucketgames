@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% set base_path = base_path | default("./") %}
 <head>
+    {% block head scoped%}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% if page.image_link('icon') %}
-    <link rel="icon" type="image/x-icon" href="{{ page.image_link('icon') }}">
+    <link rel="icon" type="image/x-icon" href="{{ base_path }}{{ page.image_link('icon') }}">
     {% endif %}
-    <link rel="preload" href="./_static/bootstrap.min.css" as="style" />
-    <link href="./_static/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="{{ base_path }}_static/bootstrap.min.css" as="style" />
+    <link href="{{ base_path }}_static/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ base_path }}style.css">
     <style>
         {{ page.css }}
     </style>
@@ -21,14 +22,22 @@
     {% if page.image_link('icon') %}
     <meta property="og:image" content="{{ base_url }}{{ page.image_link('icon') }}" />
     {% endif %}
+    {% endblock %}
+
     {% block end_head scoped%}
     {% endblock %}
 </head>
 
 <body>
 
-    <div class="container" id="bucket-content">
+    {% block before_content scoped %}
+    {% endblock %}
 
+    <div class="container" id="bucket-content">
+        {% block before_bucket_desc scoped %}
+        {% endblock %}
+        
+        {% block bucket_desc scoped %}
         {% if bucket.description %}
         <div class="row mt-3">
             <div class="col">
@@ -40,6 +49,10 @@
             </div>
         </div>
         {% endif %}
+        {% endblock %}
+
+        {% block before_games scoped %}
+        {% endblock %}
 
         <div class="row mt-3">
             {% for game in bucket.games %}
@@ -47,13 +60,13 @@
             <div class="margin-spacer col-md-3 mb-3">
                 <div class="card">
                     {% if game.image_link('cover') %}
-                    <a href="{{ game.directory }}/index.html" class="card-img-top img-contain">
-                        <img src="{{ game.directory }}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
+                    <a href="{{ base_path }}{{ game.directory }}/index.html" class="card-img-top img-contain">
+                        <img src="{{ base_path }}{{ game.directory }}/{{ game.image_link('cover') }}" alt="Cover image for {{ game.title }}" class="card-img-top img-fluid" height="{{ game.image_obj('cover').height }}" width="{{ game.image_obj('cover').width }}">
                     </a>
                     {% endif %}
 
                     <div class="card-body">
-                        <h5 class="card-title mb-0"><a href="{{ game.directory }}/index.html">{{ game.title }}</a></h5>
+                        <h5 class="card-title mb-0"><a href="{{ base_path }}{{ game.directory }}/index.html">{{ game.title }}</a></h5>
                         <div class="text-muted">
                             {% if game.author and game.author_link %}
                             By <a class="author-link" href="{{ game.author_link }}">{{ game.author }}</a>
@@ -90,8 +103,8 @@
     </div>
 
     {% block end_body %}
-    <script src="./_static/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="{{ base_path }}_static/bootstrap.bundle.min.js"></script>
+    <script src="{{ base_path }}script.js"></script>
     <script>
         {% autoescape false %}{{ page.js }}{% endautoescape %}
     </script>

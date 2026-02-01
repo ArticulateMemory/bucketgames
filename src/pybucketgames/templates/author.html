@@ -1,0 +1,41 @@
+{% extends "default/bucket.html" %}
+
+{% set base_path = "../../../" %}
+
+{% block head scoped %}
+{{ super() }}
+{% endblock %}
+
+{% block before_content scoped %}
+    <div id="back-button" class="mt-2">
+        <a class="btn p-2" href="../../index.html">Home</a>
+    </div>
+{% endblock %}
+
+{% block before_games scoped %}
+
+{% if page.author_blurb %}
+<div class="content mt-3">
+    <div class="row">
+        <div class="col-md-8">
+            {% if page.author %}
+            <h2>About {{ page.author }}</h2>
+            {% endif %}
+            <p>
+                {{ page.author_blurb | markdown }}
+            </p>
+        </div>
+        {% if page.image_link('author') or page.author_pic %}
+        <div class="col-md">
+            <div id="author-img-contain" class="img-contain">
+                <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ base_path }}{{ page.image_obj('author').link or page.image_link(page.author_pic) }}" height="{{ page.image_obj('author').height }}" width="{{ page.image_obj('author').width }}" alt="Author's image" loading="lazy">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+
