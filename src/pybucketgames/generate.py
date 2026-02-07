@@ -539,7 +539,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
 
     if "author_link" not in game_toml and "author" in game_toml:
         author_path = get_author_path(game_toml["author"])
-        game_toml["author_link"] = "author/"+author_path+"/index.html" 
+        game_toml["author_link"] = base_url+"author/"+author_path+"/index.html" 
 
     # Title.
 
