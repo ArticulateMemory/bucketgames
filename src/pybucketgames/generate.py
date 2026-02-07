@@ -352,11 +352,11 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
     destination.write_text(rendered, encoding="utf-8")
 
 def generate_author_page(author_name: str, author_games: list[Game], bucket_path: pathlib.Path, website: pathlib.Path, bucket_toml: dict):
-    author_name_path = get_author_path(author_name)
+    author_name_uri_path = get_author_path(author_name, True)
 
     author_toml = bucket_toml.copy()
     
-    author_toml_path = bucket_path / 'authors' / (author_name_path + ".toml")
+    author_toml_path = bucket_path / 'authors' / (get_author_path(author_name, False) + ".toml")
     if author_toml_path.is_file():
         try:
             with open(author_toml_path, "rb") as f:
@@ -378,9 +378,9 @@ def generate_author_page(author_name: str, author_games: list[Game], bucket_path
 
     proxy = author_bucket_object.proxy()
 
-    (website / "author" / author_name_path).mkdir(exist_ok=True, parents=True)
+    (website / "author" / author_name_uri_path).mkdir(exist_ok=True, parents=True)
     apply_template(
-        destination=website / "author" / author_name_path / 'index.html',
+        destination=website / "author" / author_name_uri_path / 'index.html',
         template="author.html",
         game_path=bucket_path,
         bucket=proxy,
@@ -538,7 +538,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     # Default author page
 
     if "author_link" not in game_toml and "author" in game_toml:
-        author_path = get_author_path(game_toml["author"])
+        author_path = get_author_path(game_toml["author"], True)
         game_toml["author_link"] = base_url+"author/"+author_path+"/index.html" 
 
     # Title.
@@ -767,5 +767,5 @@ def generate(bucket: str) -> None:
 
     print("Website files generated successfully.")
 
-def get_author_path(author: str)-> str:
-    return author.lower().replace(" ", "_")
+def get_author_path(author: str, is_url = False)-> str:
+    return author.lower().replace(" ", "-" if is_url else "_")

@@ -2,10 +2,6 @@
 
 {% set base_path = "../../../" %}
 
-{% block head scoped %}
-{{ super() }}
-{% endblock %}
-
 {% block before_content scoped %}
     <div id="back-button" class="mt-2">
         <a class="btn p-2" href="../../index.html">Home</a>
@@ -13,6 +9,18 @@
 {% endblock %}
 
 {% block before_games scoped %}
+
+<div class="content mt-3">
+    <div class="row">
+        <div class="col text-center">
+            <h2>Games By {{ page.author }}</h2>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block after_games scoped %}
 
 {% if page.author_blurb %}
 <div class="content mt-3">
