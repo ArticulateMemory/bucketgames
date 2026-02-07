@@ -15,6 +15,7 @@ node_modules/
 # Test buckets
 spite/
 test/
+example/
 
 # Personal buckets/files
 .gitignore_local

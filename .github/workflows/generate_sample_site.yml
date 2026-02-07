@@ -35,14 +35,16 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
-
       
       - name: init bucket 
         run: uv run pybucketgames example init
 
       - name: add sample example game 
         run: uv run pybucketgames example add example-game --use-sample-assets
-
+        
+      - name: set base_url
+        run: sed -i "s/https:\/\/www.example.changeme\//https:\/\/articulatememory.github.io\/pybucketgames\//" ./example/bucket.toml
+        
       - name: generate
         run: uv run pybucketgames example generate
 
