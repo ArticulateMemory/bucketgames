@@ -11,11 +11,11 @@ A new game - but far from the last one.
 
 # Optional author information
 #author="Cool Author"
-#author_link="https://mycoolwebsite.example.com"
+#author_link="https://mycoolwebsite.example.com" # use "" to disable, defaults to a generated author page
 #author_blurb="""Some Markdown text about the author"""
 
-#author_file="coolauthor.toml" # Relative to rebucketgames/authors . Can contains reusable author info
-#author_pic="coolauthor.png" # will look for an "author" img by default, but this can be added to the author_file and reused
+#author_file="coolauthor.toml" # Contains reusable author info. Will look for pybucketgames/authors/[author_name_with_underscores].toml . Deprecated. 
+#author_pic="coolauthor.png" # will look for an "author" img by default, but this can be added to the author_file and reused. Relative to the toml file it's set in
 
 #platforms = "PC, Mac, and Linux"
 

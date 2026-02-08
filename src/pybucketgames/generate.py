@@ -482,16 +482,21 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         raise SystemExit(f"Error decoding {game_toml_path}: {e}")
 
     # Check if deprecation notice should be displayed for author_toml location
-    if "author" in game_toml and "author_file" in game_toml:
-        author_name_path = get_author_path(game_toml["author"])
-        correct_author_toml_path = game_path / '..' / 'authors' / (author_name_path + ".toml")
-        if not game_toml["author_file"] == (author_name_path + ".toml"):
-            print("Deprecated:", game_toml["author_file"], "should be moved to", correct_author_toml_path)
+    author_toml_path = ""
+    if "author" in game_toml:
+        author_toml_path = bucket_path / 'authors' / (get_author_path(game_toml["author"], False) + ".toml")
+        correct_author_toml_path = author_toml_path
+        if not correct_author_toml_path.is_file():
+            if "author_file" in game_toml:
+                author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+                print("Deprecated:", game_toml["author_file"], "should be moved to", correct_author_toml_path)
+    elif "author_file" in game_toml:
+        author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+        print("Deprecated:", game_path / "game.toml", "has an author_file specified but no author. It's preferred to specify the author name and create the author file at authors/[author_name].toml")
 
     # Allow importing [author].toml in [bucket]/authors with author_file for reusable author info
     author_toml = {}
-    if "author_file" in game_toml:
-        author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+    if author_toml_path and author_toml_path.is_file():
         try:
             with open(author_toml_path, "rb") as f:
                 author_toml = tomllib.load(f)
@@ -501,7 +506,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     # Set relative author image path
     if 'author_pic' in author_toml:
         if '../' in author_toml['author_pic']:
-            print("Warning: Author image '"+author_toml['author_pic']+"' uses a deprecated path. Consider updating it to be relative to the toml file.")
+            print("Deprecated: Author image '"+author_toml['author_pic']+"' uses a deprecated path. Consider updating it to be relative to the toml file.")
 
         auth_pic_path = pathlib.Path(author_toml['author_pic'])
         auth_pic_path = pathlib.Path('../authors' ) / auth_pic_path
@@ -705,7 +710,7 @@ def generate(bucket: str) -> None:
     bucket_toml.setdefault("image_extensions", DEFAULT_IMAGE_EXTENSIONS)
 
     if "base_url" not in bucket_toml:
-        raise Exception("base_url is required in bucket.toml to generate RSS")
+        raise Exception("base_url is required in bucket.toml")
     base_url = bucket_toml["base_url"]
 
     # Games.
