@@ -51,9 +51,15 @@
     {% endif %}
     {% endblock %}
 
+    {% block back_button scoped %}
     <div id="back-button" class="mt-2">
-        <a class="btn p-2" href="../index.html">Back</a>
+        <a class="btn p-2" href="../index.html">Home</a>
     </div>
+    <script>
+        document.querySelector('#back-button .btn').href="javascript:history.back()";
+        document.querySelector('#back-button .btn').innerHTML="Back";
+    </script>
+    {% endblock %}
 
     <div class="container mt-2" id="game-content">
 
@@ -149,7 +155,7 @@
         </div>
         {% if game.author_blurb %}
         <div class="row content mb-2">
-            <div class="col-md-8">
+            <div class="{% if game.image_link('author') or game.author_pic %} col-md-8 {% else %} col {% endif %}">
                 {% if game.author %}
                 <h2>About {{ game.author }}</h2>
                 {% endif %}

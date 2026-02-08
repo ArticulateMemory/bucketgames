@@ -8,24 +8,17 @@
     </div>
 {% endblock %}
 
-{% block before_games scoped %}
-
-<div class="content mt-3">
-    <div class="row">
-        <div class="col text-center">
-            <h2>Games By {{ page.author }}</h2>
-        </div>
-    </div>
-</div>
-
+{% block bucket_desc scoped %}
+{# Extend this template and comment out/remove the super() to remove the bucket description #}
+{{ super() }}
 {% endblock %}
 
-{% block after_games scoped %}
+{% block before_games scoped %}
 
 {% if page.author_blurb %}
 <div class="content mt-3">
     <div class="row">
-        <div class="col-md-8">
+        <div class="{% if page.image_link('author') or page.author_pic %} col-md-8 {% else %} col {% endif %}">
             {% if page.author %}
             <h2>About {{ page.author }}</h2>
             {% endif %}
