@@ -778,4 +778,5 @@ def generate(bucket: str) -> None:
     print("Website files generated successfully.")
 
 def get_author_path(author: str, is_url = False)-> str:
-    return author.lower().replace(" ", "-" if is_url else "_")
+    replace_char: str = "-" if is_url else "_"
+    return author.lower().replace(" ", replace_char).replace("/", replace_char).replace("?", replace_char)
