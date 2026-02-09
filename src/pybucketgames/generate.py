@@ -540,11 +540,15 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
 
     releases.sort(key=lambda r: r.date, reverse=True)
 
-    # Default author page
+    # Author page
 
-    if "author_link" not in game_toml and "author" in game_toml:
+    author_page_link: None | pathlib.Path = None
+    if "author" in game_toml:
         author_path = get_author_path(game_toml["author"], True)
-        game_toml["author_link"] = base_url+"author/"+author_path+"/index.html" 
+        author_page_link = pathlib.Path("author") / author_path / "index.html" 
+        # Use as default author link
+        if "author_link" not in game_toml:
+            game_toml["author_link"] = str(author_page_link)
 
     # Title.
 
@@ -604,6 +608,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         game=proxy,
         page=proxy,
         game_path_web=game_path_web,
+        author_page_link=author_page_link,
     )
 
     apply_template(

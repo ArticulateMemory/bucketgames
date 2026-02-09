@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+{% set base_path = base_path | default("../") %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -133,7 +133,7 @@
                 {% block button_links %}
                 {% for btn in game.button_links %}
                 <div>
-                    <a class="btn btn-primary mb-1" href="{{ btn.link }}">
+                    <a class="btn btn-primary mb-3" href="{{ btn.link }}">
                         {% if btn.text %}
                         {{ btn.text }}
                         {% else %}
@@ -153,21 +153,23 @@
             </div>
 
         </div>
-        {% if game.author_blurb %}
+        {% if game.author and game.author_blurb %}
         <div class="row content mb-2">
-            <div class="{% if game.image_link('author') or game.author_pic %} col-md-8 {% else %} col {% endif %}">
-                {% if game.author %}
-                <h2>About {{ game.author }}</h2>
-                {% endif %}
-                <p>{{ game.author_blurb | markdown }}</p>
-            </div>
             {% if game.image_link('author') or game.author_pic %}
             <div class="col-md">
-                <div id="author-img-contain" class="img-contain">
-                    <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ game.image_obj('author').link or game.image_link(game.author_pic) }}" height="{{ game.image_obj('author').height }}" width="{{ game.image_obj('author').width }}" alt="Author's image" loading="lazy">
+                <div id="author-img-contain" class="img-contain text-center">
+                    {% if game.author_pic %}
+                    <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ game.image_obj(game.author_pic).link }}" height="{{ game.image_obj(game.author_pic).height }}" width="{{ game.image_obj(game.author_pic).width }}" alt="Author's image" loading="lazy">
+                    {% else %}
+                    <img id="author-img" class="img-fluid mb-3 thumbnail" src="{{ game.image_obj('author').link }}" height="{{ game.image_obj('author').height }}" width="{{ game.image_obj('author').width }}" alt="Author's image" loading="lazy">
+                    {% endif %}
                 </div>
             </div>
             {% endif %}
+            <div class="{% if game.image_link('author') or game.author_pic %} col-md-8 {% else %} col-md {% endif %}">
+                <h2>About <a class="author-link" href="{{base_path}}{{ author_page_link }}" style="color:inherit">{{ game.author }}</a></h2>
+                <p>{{ game.author_blurb | markdown }}</p>
+            </div>
         </div>
         {% endif %}
 

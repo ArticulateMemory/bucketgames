@@ -108,6 +108,10 @@ body {
   margin:-3rem
 }
 
+.clear-cols-bottom {
+    margin-top: -1rem;
+}
+
 #bucket-content .row > div > .card {
     height: 100%;
 }
