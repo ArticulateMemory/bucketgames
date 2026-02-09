@@ -187,7 +187,11 @@ class Page:
                 if not pathlib.Path(os.path.dirname(destination)).is_dir():
                     os.makedirs(os.path.dirname(destination), exist_ok=True)
                     print("Warning: Unexpected directory",os.path.dirname(destination), "created when linking image", file_path, ". This can expose undesired files.")
-                shutil.copy(file_path, destination)
+                
+                try:
+                    shutil.copy(file_path, destination)
+                except shutil.SameFileError:
+                    print("Warning: Tried to copy "+str(file_path)+" to "+str(destination)+" which is the same file")
                 linked.add(destination)
 
             return filename
@@ -347,6 +351,42 @@ def apply_template(destination: pathlib.Path, template: str, game_path: pathlib.
 
     destination.write_text(rendered, encoding="utf-8")
 
+def generate_author_page(author_name: str, author_games: list[Game], bucket_path: pathlib.Path, website: pathlib.Path, bucket_toml: dict):
+    author_name_uri_path = get_author_path(author_name, True)
+
+    author_toml = bucket_toml.copy()
+    
+    author_toml_path = bucket_path / 'authors' / (get_author_path(author_name, False) + ".toml")
+    if author_toml_path.is_file():
+        try:
+            with open(author_toml_path, "rb") as f:
+                author_toml.update(tomllib.load(f))
+        except tomllib.TOMLDecodeError as e:
+            raise SystemExit(f"Error trying to open author file {author_toml_path}: {e}")
+
+    if 'author_pic' in author_toml:
+        auth_pic_path = pathlib.Path(author_toml['author_pic'])
+        auth_pic_path = pathlib.Path('authors') / auth_pic_path
+        author_toml['author_pic'] = str(auth_pic_path)
+
+    author_bucket_object = Bucket(
+        path=bucket_path,
+        website_path=website,
+        games=author_games,
+        toml=author_toml,
+    )
+
+    proxy = author_bucket_object.proxy()
+
+    (website / "author" / author_name_uri_path).mkdir(exist_ok=True, parents=True)
+    apply_template(
+        destination=website / "author" / author_name_uri_path / 'index.html',
+        template="author.html",
+        game_path=bucket_path,
+        bucket=proxy,
+        page=proxy,
+    )
+
 def scan_release(game_path: pathlib.Path, release_path: pathlib.Path) -> Release:
     """
     Scans a release directory and returns a Release object.
@@ -441,14 +481,38 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
     except tomllib.TOMLDecodeError as e:
         raise SystemExit(f"Error decoding {game_toml_path}: {e}")
 
-    # Allow importing [author].toml in [bucket]/authors with author_file for reusable author info
-    if "author_file" in game_toml:
+    # Check if deprecation notice should be displayed for author_toml location
+    author_toml_path = ""
+    if "author" in game_toml:
+        author_toml_path = bucket_path / 'authors' / (get_author_path(game_toml["author"], False) + ".toml")
+        correct_author_toml_path = author_toml_path
+        if not correct_author_toml_path.is_file():
+            if "author_file" in game_toml:
+                author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+                print("Deprecated:", game_toml["author_file"], "should be moved to", correct_author_toml_path)
+    elif "author_file" in game_toml:
         author_toml_path = game_path / '..' / 'authors' / game_toml["author_file"]
+        print("Deprecated:", game_path / "game.toml", "has an author_file specified but no author. It's preferred to specify the author name and create the author file at authors/[author_name].toml")
+
+    # Allow importing [author].toml in [bucket]/authors with author_file for reusable author info
+    author_toml = {}
+    if author_toml_path and author_toml_path.is_file():
         try:
             with open(author_toml_path, "rb") as f:
-                game_toml.update(tomllib.load(f))
+                author_toml = tomllib.load(f)
         except tomllib.TOMLDecodeError as e:
             raise SystemExit(f"Error trying to open author file {author_toml_path}: {e}")
+
+    # Set relative author image path
+    if 'author_pic' in author_toml:
+        if '../' in author_toml['author_pic']:
+            print("Deprecated: Author image '"+author_toml['author_pic']+"' uses a deprecated path. Consider updating it to be relative to the toml file.")
+
+        auth_pic_path = pathlib.Path(author_toml['author_pic'])
+        auth_pic_path = pathlib.Path('../authors' ) / auth_pic_path
+        author_toml['author_pic'] = str(auth_pic_path)
+
+    game_toml.update(author_toml)
 
     game_toml.setdefault("image_extensions", DEFAULT_IMAGE_EXTENSIONS)
 
@@ -475,6 +539,16 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         shutil.copytree(d, website_path / d.name)
 
     releases.sort(key=lambda r: r.date, reverse=True)
+
+    # Author page
+
+    author_page_link: None | pathlib.Path = None
+    if "author" in game_toml:
+        author_path = get_author_path(game_toml["author"], True)
+        author_page_link = pathlib.Path("author") / author_path / "index.html" 
+        # Use as default author link
+        if "author_link" not in game_toml:
+            game_toml["author_link"] = str(author_page_link)
 
     # Title.
 
@@ -534,6 +608,7 @@ def generate_game(game_path: pathlib.Path, website_path: pathlib.Path) -> Game:
         game=proxy,
         page=proxy,
         game_path_web=game_path_web,
+        author_page_link=author_page_link,
     )
 
     apply_template(
@@ -640,7 +715,7 @@ def generate(bucket: str) -> None:
     bucket_toml.setdefault("image_extensions", DEFAULT_IMAGE_EXTENSIONS)
 
     if "base_url" not in bucket_toml:
-        raise Exception("base_url is required in bucket.toml to generate RSS")
+        raise Exception("base_url is required in bucket.toml")
     base_url = bucket_toml["base_url"]
 
     # Games.
@@ -654,6 +729,11 @@ def generate(bucket: str) -> None:
             games.append(game)
 
     games.sort(key=lambda g: g.date, reverse=True)
+
+    games_by_author: dict[str, list[Game]] = {}
+    for game in games:
+        if "author" in game.toml:
+            games_by_author.setdefault(game.toml["author"],[]).append(game)
 
     # Render bucket templates
 
@@ -688,7 +768,15 @@ def generate(bucket: str) -> None:
         page=proxy,
     )
 
+    # Render author templates
+    for author, author_games in games_by_author.items():
+        generate_author_page(author, author_games, bucket_path, website, bucket_toml)
+
     if "enable_rss" in bucket_object.toml and bucket_object.toml["enable_rss"]:
         generate_rss(games, bucket_object, website)
 
     print("Website files generated successfully.")
+
+def get_author_path(author: str, is_url = False)-> str:
+    replace_char: str = "-" if is_url else "_"
+    return author.lower().replace(" ", replace_char).replace("/", replace_char).replace("?", replace_char)
