@@ -11,6 +11,9 @@
     <link rel="preload" href="{{ base_path }}_static/bootstrap.min.css" as="style" />
     <link href="{{ base_path }}_static/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ base_path }}style.css">
+    {% if page.enable_rss %}
+    <link rel="alternate" type="application/rss+xml" title="{{ page.title }} RSS Feed" href="{{ base_path }}rss.xml">
+    {% endif %}
     <style>
         {{ page.css }}
     </style>
